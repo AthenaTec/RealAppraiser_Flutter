@@ -1,4 +1,4 @@
-package com.realappraiser.gharvalue.real_appraiser
+package com.realappraiser.gharvalue
 
 import io.flutter.embedding.android.FlutterActivity
 
