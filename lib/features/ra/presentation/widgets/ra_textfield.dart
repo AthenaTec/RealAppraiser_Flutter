@@ -40,11 +40,11 @@ class RATextField extends StatelessWidget {
         decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(8.0),
               borderSide: const BorderSide(color: RAColors.test),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(8.0),
               borderSide: const BorderSide(color: RAColors.test),
             ),
             filled: true,

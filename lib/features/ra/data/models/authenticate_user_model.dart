@@ -9,9 +9,29 @@ class AuthenticateUserModel extends AuthenticateUserEntity {
 
   factory AuthenticateUserModel.fromJson(Map<String, dynamic> json) =>
       AuthenticateUserModel(
-        status: json["status"],
-        data: AuthenticateUserDataModel.fromJson(json["data"]),
-        msg: json["msg"],
+        status: json["status"] ?? false, // Handle null with default value
+        data: json["data"] != null
+            ? AuthenticateUserDataModel.fromJson(json["data"])
+            : const AuthenticateUserDataModel(
+                isPrivacyPolicyAccepted: false,
+                isMain: false,
+                isExternal: 0,
+                active: 0,
+                otp: "",
+                isPwdExpired: false,
+                email: "",
+                loginId: 0,
+                employeeId: 0,
+                firstName: "",
+                lastName: "",
+                mobile: "",
+                agencyId: 0,
+                branchId: 0,
+                agencyName: "",
+                cityName: "",
+                agencyCode: "",
+                roles: []), // Check for null before parsing
+        msg: json["msg"] ?? '', // Handle null with default value
       );
 }
 
@@ -39,25 +59,27 @@ class AuthenticateUserDataModel extends AuthenticateUserDataEntity {
 
   factory AuthenticateUserDataModel.fromJson(Map<String, dynamic> json) =>
       AuthenticateUserDataModel(
-        isPrivacyPolicyAccepted: json["IsPrivacyPolicyAccepted"],
-        isMain: json["IsMain"],
-        isExternal: json["IsExternal"],
-        active: json["Active"],
-        otp: json["OTP"],
-        isPwdExpired: json["IsPwdExpired"],
-        email: json["Email"],
-        loginId: json["LoginId"],
-        employeeId: json["EmployeeId"],
-        firstName: json["FirstName"],
-        lastName: json["LastName"],
-        mobile: json["Mobile"],
-        agencyId: json["AgencyId"],
-        branchId: json["BranchId"],
-        agencyName: json["AgencyName"],
-        cityName: json["CityName"],
-        agencyCode: json["AgencyCode"],
-        roles: List<AuthenticateUserRoleModel>.from(
-            json["Roles"].map((x) => AuthenticateUserRoleModel.fromJson(x))),
+        isPrivacyPolicyAccepted: json["IsPrivacyPolicyAccepted"] ?? false,
+        isMain: json["IsMain"] ?? false,
+        isExternal: json["IsExternal"] ?? false,
+        active: json["Active"] ?? false,
+        otp: json["OTP"] ?? '',
+        isPwdExpired: json["IsPwdExpired"] ?? false,
+        email: json["Email"] ?? '',
+        loginId: json["LoginId"] ?? '',
+        employeeId: json["EmployeeId"] ?? '',
+        firstName: json["FirstName"] ?? '',
+        lastName: json["LastName"] ?? '',
+        mobile: json["Mobile"] ?? '',
+        agencyId: json["AgencyId"] ?? '',
+        branchId: json["BranchId"] ?? '',
+        agencyName: json["AgencyName"] ?? '',
+        cityName: json["CityName"] ?? '',
+        agencyCode: json["AgencyCode"] ?? '',
+        roles: json["Roles"] != null
+            ? List<AuthenticateUserRoleModel>.from(
+                json["Roles"].map((x) => AuthenticateUserRoleModel.fromJson(x)))
+            : [], // Default to an empty list if null
       );
 }
 
@@ -69,7 +91,7 @@ class AuthenticateUserRoleModel extends AuthenticateUserRoleEntity {
 
   factory AuthenticateUserRoleModel.fromJson(Map<String, dynamic> json) =>
       AuthenticateUserRoleModel(
-        roleId: json["RoleId"],
-        roleDescription: json["RoleDescription"],
+        roleId: json["RoleId"] ?? '',
+        roleDescription: json["RoleDescription"] ?? '',
       );
 }

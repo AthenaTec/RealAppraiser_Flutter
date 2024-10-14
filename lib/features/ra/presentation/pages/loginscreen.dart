@@ -42,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is SecurityTokenSuccessState) {
           Modular.to.popAndPushNamed('/${RoutingString.dashBoardScreen}');
         }
+
       }, builder: (context, state) {
         if (state is LoginPasswordVisibilityState) {
           isPasswordVisible = state.isPasswordVisible;
@@ -53,47 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     image: DecorationImage(
                         image: AssetImage("assets/png/background.png"),
                         fit: BoxFit.cover)),
-                child:
-                    // !isUrlSet
-                    //     ? Column(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: [
-                    //           Padding(
-                    //             padding: const EdgeInsets.only(left: 30),
-                    //             child: Align(
-                    //               alignment: Alignment.centerLeft,
-                    //               child: Text(
-                    //                 LoginString.setServerURL,
-                    //                 style: const TextStyle(
-                    //                     color: RAColors.white,
-                    //                     fontSize: 16,
-                    //                     fontWeight: FontWeight.bold),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //           Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 left: 20, right: 20, top: 10),
-                    //             child: RATextField(
-                    //               controller: serverUrlController!,
-                    //               hintText: 'Enter Server URL',
-                    //             ),
-                    //           ),
-                    //           Padding(
-                    //             padding: const EdgeInsets.all(20.0),
-                    //             child: RAButton(
-                    //                 text: LoginString.submitBtn,
-                    //                 onPressed: () {
-                    //
-                    //                   // setState(() {
-                    //                   //   isUrlSet = true;
-                    //                   // });
-                    //                 }),
-                    //           ),
-                    //         ],
-                    //       )
-                    //     :
-                    Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //Email
@@ -105,8 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           LoginString.email,
                           style: const TextStyle(
                               color: RAColors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                          fontFamily: "InterRegular"),
                         ),
                       ),
                     ),
@@ -122,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           if (isEmailValid) {
                             BlocProvider.of<LoginCubit>(context)
-                                .getStore(emailController!.text);
+                                .getStore(emailController!.text, "",context);
                           } else {
                             Fluttertoast.showToast(msg: "Enter a valid email");
                           }
@@ -144,8 +106,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             LoginString.password,
                             style: const TextStyle(
                                 color: RAColors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                            fontFamily: "InterRegular"),
                           ),
                         ),
                       ),
@@ -171,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 print(passwordController!.text);
                                 BlocProvider.of<LoginCubit>(context)
                                     .authenticateUser(emailController!.text,
-                                        passwordController!.text);
+                                        passwordController!.text,context);
                               }
                             }),
                       ),

@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: 'none'
 
-version: 2.0.0+1
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
@@ -26,6 +26,17 @@ dependencies:
   crypto: ^3.0.3
   curved_navigation_bar: ^1.0.3
   expansion_tile_card: ^3.0.0
+  simple_ripple_animation: ^0.0.9
+  flutter_svg: ^2.0.10+1
+  google_maps_flutter: ^2.9.0
+  location: ^7.0.0
+  permission_handler: ^11.3.1
+  intl: ^0.19.0
+  image_picker: ^1.1.2
+  geocoding: ^3.0.0
+  geolocator: ^9.0.2
+  flutter_image_compress: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:
@@ -58,3 +69,11 @@ flutter:
     - family: UbuntuRegular
       fonts:
         - asset: assets/fonts/Ubuntu-Regular.ttf
+
+    - family: AldrichRegular
+      fonts:
+        - asset: assets/fonts/Aldrich-Regular.ttf
+
+    - family: InterRegular
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf

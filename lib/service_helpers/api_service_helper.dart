@@ -23,7 +23,7 @@ class ApiHelper {
   static Future<dynamic> getRequestUri(
       Uri uri, Map<String, String> header, bool loading) async {
     try {
-      final response = await http.get(uri);
+      final response = await http.get(uri,headers: header);
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -72,6 +72,76 @@ class ApiHelper {
        if (response.statusCode == 200) {
         return response.body;
       } else {
+        print(response.statusCode.toString());
+        throw Exception('Failed to post data');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+
+  // Function to make a put request
+  static Future<dynamic> putRequest(
+      String endpoint, dynamic data, Map<String, String> header) async {
+    print("api");
+    try {
+      final jsonData =
+      const JsonEncoder().convert(data); // Convert data to JSON string
+      final jsonBytes = utf8.encode(jsonData);
+      final response = await ioClient.put(Uri.parse(endpoint),
+          headers: header, body: json.encode(data));
+
+      if (response.statusCode == 201) {
+        return response.body;
+      }
+      else {
+        print(response.statusCode.toString());
+        throw Exception('Failed to post data');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+
+  static Future<dynamic> postRequest200(
+      String endpoint, dynamic data, Map<String, String> header) async {
+    print("api");
+    try {
+      final jsonData =
+      const JsonEncoder().convert(data); // Convert data to JSON string
+      final jsonBytes = utf8.encode(jsonData);
+      final response = await ioClient.post(Uri.parse(endpoint),
+          headers: header, body: json.encode(data));
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+      else {
+        print(response.statusCode.toString());
+        throw Exception('Failed to post data');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+
+  // Function to make a put request
+  static Future<dynamic> putRequest200(
+      String endpoint, dynamic data, Map<String, String> header) async {
+    print("putRequest");
+    try {
+      final jsonData =
+      const JsonEncoder().convert(data); // Convert data to JSON string
+      final response = await ioClient.put(Uri.parse(endpoint),
+          headers: header, body: json.encode(data));
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+      else {
         print(response.statusCode.toString());
         throw Exception('Failed to post data');
       }

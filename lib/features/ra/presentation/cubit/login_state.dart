@@ -4,6 +4,8 @@ import 'package:real_appraiser/features/ra/domain/entities/get_store_entity.dart
 import 'package:real_appraiser/features/ra/domain/entities/login_entity.dart';
 import 'package:real_appraiser/features/ra/domain/entities/security_token_entity.dart';
 
+import '../../domain/entities/employee_branch_entity.dart';
+
 abstract class LoginState extends Equatable {
   const LoginState();
 
@@ -72,6 +74,7 @@ class SecurityTokenSuccessState extends LoginState {
   final  SecurityTokenEntity securityTokenEntity;
 
   const SecurityTokenSuccessState({required this.securityTokenEntity});
+
 }
 
 class SecurityTokenErrorState extends LoginState {
@@ -80,3 +83,16 @@ class SecurityTokenErrorState extends LoginState {
   const SecurityTokenErrorState({required this.message});
 }
 
+class EmployeeBranchInitialState extends LoginState {}
+
+class EmployeeBranchSuccessState extends LoginState {
+  final EmployeeBranchEntity employeeBranchEntity;
+
+  const EmployeeBranchSuccessState({required this.employeeBranchEntity});
+}
+
+class EmployeeBranchErrorState extends LoginState {
+  final String message;
+
+  const EmployeeBranchErrorState({required this.message});
+}

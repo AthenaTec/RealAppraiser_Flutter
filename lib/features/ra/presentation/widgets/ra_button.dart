@@ -13,7 +13,7 @@ class RAButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
-    this.backgroundColor = RAColors.colorPrimaryDark,
+    this.backgroundColor = RAColors.colorM,
     this.textColor = Colors.white,
     this.fontSize = 16,
     this.fontWeight = FontWeight.bold,

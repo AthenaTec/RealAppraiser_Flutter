@@ -2,6 +2,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:real_appraiser/features/ra/presentation/widgets/common_loader.dart';
 
 class RAUtilis {
   final RegExp _urlRegExp = RegExp(r'^(?:https?:\/\/)?'
@@ -37,16 +38,21 @@ class RAUtilis {
 
   static enc.Encrypted encryptWithAES(String keyValue, String plainText) {
     final cipherKey = enc.Key.fromUtf8(keyValue);
-    final encryptService = enc.Encrypter(enc.AES(cipherKey, mode: enc.AESMode.cbc));
-    final initVector = enc.IV.fromUtf8(keyValue.substring(0, 16)); //Here the IV is generated from key. This is for example only. Use some other text or random data as IV for better security.
-    enc.Encrypted encryptedData =encryptService.encrypt(plainText, iv: initVector);
+    final encryptService =
+        enc.Encrypter(enc.AES(cipherKey, mode: enc.AESMode.cbc));
+    final initVector = enc.IV.fromUtf8(keyValue.substring(0,
+        16)); //Here the IV is generated from key. This is for example only. Use some other text or random data as IV for better security.
+    enc.Encrypted encryptedData =
+        encryptService.encrypt(plainText, iv: initVector);
     return encryptedData;
   }
 
   static String decryptWithAES(String key, enc.Encrypted encryptedData) {
     final cipherKey = enc.Key.fromUtf8(key);
-    final encryptService = enc.Encrypter(enc.AES(cipherKey, mode: enc.AESMode.cbc)); //Using AES CBC encryption
-    final initVector = enc.IV.fromUtf8(key.substring(0, 16)); //Here the IV is generated from key. This is for example only. Use some other text or random data as IV for better security.
+    final encryptService = enc.Encrypter(
+        enc.AES(cipherKey, mode: enc.AESMode.cbc)); //Using AES CBC encryption
+    final initVector = enc.IV.fromUtf8(key.substring(0,
+        16)); //Here the IV is generated from key. This is for example only. Use some other text or random data as IV for better security.
     return encryptService.decrypt(encryptedData, iv: initVector);
   }
 
@@ -70,5 +76,23 @@ class RAUtilis {
     } else {
       return "";
     }
+  }
+
+   static void showLoader(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevents dismissing by tapping outside
+      builder: (BuildContext context) {
+        return const Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: CommonLoader(), // Use the loader widget
+        );
+      },
+    );
+  }
+
+ static void hideLoader(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop(); // Dismiss the loader
   }
 }

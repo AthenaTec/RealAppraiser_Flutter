@@ -1,6 +1,6 @@
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_appraiser/common_utilis/encryption.dart';
 import 'package:real_appraiser/common_utilis/strings.dart';
 import 'package:real_appraiser/common_utilis/utilis.dart';
 import 'package:real_appraiser/features/ra/domain/usecases/login_usecases.dart';
@@ -28,28 +28,37 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future getStore(String email) async {
+  Future getStore(
+    String email,
+    String login,
+    BuildContext c,
+  ) async {
     try {
       emit(GetStoreInitialState());
-      var result = await loginUseCases.getStore(email);
+      var result = await loginUseCases.getStore(email, c);
       result.fold((failure) {
         emit(GetStoreErrorState(message: failure.message));
-      }, (data) {
+      }, (data) async {
         print("GetStoreSuccess");
-        emit(GetStoreSuccessState(getStoreEntity: data));
-        dataKey = data.data.toString();
-        print(data.msg);
-        print(data.data);
-        isPasswordVisible = true;
-        emit(
-            LoginPasswordVisibilityState(isPasswordVisible: isPasswordVisible));
+        if (login.isEmpty) {
+          dataKey = data.data.toString();
+          print(data.msg);
+          print(data.data);
+          String pass = RAUtilis.getStorage(StorageString.pKey);
+         await authenticateUser(email, pass, c);
+        } else {
+          print("second time getstore");
+          String pass = RAUtilis.getStorage(StorageString.pKey);
+          Encrypted encrypted = RAUtilis.encryptWithAES(data.data, pass);
+          await securityToken(email, encrypted.base64, c);
+        }
       });
     } catch (e) {
       emit(GetStoreErrorState(message: e.toString()));
     }
   }
 
-  Future authenticateUser(String email, String password) async {
+  Future authenticateUser(String email, String password, BuildContext c) async {
     try {
       emit(AuthenticateUserInitialState());
       String getStoreData = RAUtilis.getStorage(StorageString.getStoreKey);
@@ -58,25 +67,33 @@ class LoginCubit extends Cubit<LoginState> {
       print(encryptPswd.base64);
 
       var result =
-          await loginUseCases.authenticateUser(email, encryptPswd.base64);
+          await loginUseCases.authenticateUser(email, encryptPswd.base64, c);
       result.fold((failure) {
         print("authenticateUser failed");
         emit(AuthenticateUserErrorState(message: failure.message));
       }, (data) async {
         print("authenticateUser");
         emit(AuthenticateUserSuccessState(authenticateUserEntity: data));
-        RAUtilis.setStorage(StorageString.loginId, data.data.loginId.toString());
-        await securityToken(email, encryptPswd.base64);
+        RAUtilis.setStorage(
+            StorageString.loginId, data.data.loginId.toString());
+        RAUtilis.setStorage(
+            StorageString.empId, data.data.employeeId.toString());
+        RAUtilis.setStorage(StorageString.name, data.data.firstName);
+        RAUtilis.setStorage(
+            StorageString.agencyId, data.data.agencyId.toString());
+        print(
+            "LoginID==> ${data.data.loginId.toString()}  || ${data.data.employeeId.toString()}");
+        await securityToken(email, encryptPswd.base64, c);
       });
     } catch (e) {
       emit(AuthenticateUserErrorState(message: e.toString()));
     }
   }
 
-  Future securityToken(String email, String password) async {
+  Future securityToken(String email, String password, BuildContext c) async {
     try {
       emit(SecurityTokenInitialState());
-      var result = await loginUseCases.securityToken(email, password);
+      var result = await loginUseCases.securityToken(email, password, c);
       result.fold((failure) {
         emit(SecurityTokenErrorState(message: failure.message));
       }, (data) {
@@ -86,6 +103,21 @@ class LoginCubit extends Cubit<LoginState> {
       });
     } catch (e) {
       emit(SecurityTokenErrorState(message: e.toString()));
+    }
+  }
+
+  Future getEmployeeBranches(BuildContext c) async {
+    try {
+      emit(EmployeeBranchInitialState());
+      var result = await loginUseCases.getEmployeeBranch(c);
+      result.fold((failure) {
+        emit(EmployeeBranchErrorState(message: failure.message));
+      }, (data) {
+        print("employeebranch");
+        emit(EmployeeBranchSuccessState(employeeBranchEntity: data));
+      });
+    } catch (e) {
+      emit(EmployeeBranchErrorState(message: e.toString()));
     }
   }
 }

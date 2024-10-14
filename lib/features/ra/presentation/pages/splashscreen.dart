@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:real_appraiser/common_utilis/colors.dart';
 import 'package:real_appraiser/common_utilis/strings.dart';
+import 'package:real_appraiser/common_utilis/utilis.dart';
+import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,8 +17,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController animationController;
-  late Animation<double> animation;
   String currentYear = "2024";
   String appVersion = "1.0";
 
@@ -24,13 +25,6 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     getPackageInfo();
     currentYear = DateTime.now().year.toString();
-    animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    );
-    animation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(animationController);
-    animationController.forward();
 
     Future.delayed(const Duration(seconds: 3), () {
       Modular.to.popAndPushNamed('/${RoutingString.loginScreen}');
@@ -39,7 +33,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    animationController.dispose();
     super.dispose();
   }
 
@@ -48,49 +41,85 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/png/background.png"),
-                  fit: BoxFit.cover),
-        //     gradient: LinearGradient(colors: [
-        //   RAColors.colorPrimaryDark,
-        //   Color.fromRGBO(225, 255, 255, 0.1),
-        //   RAColors.colorPrimaryDark
-        // ], begin: Alignment.topCenter, end: Alignment.bottomCenter)
-        ),
+            gradient: LinearGradient(
+                colors: [RAColors.logB1, RAColors.logB2],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-                flex: 2,
-                child: Container(
-                  alignment: Alignment.center,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: Image.asset(
-                      "assets/png/ra_logo.png",
-                      width: 300,
-                      height: 200,
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    child: RippleAnimation(
+                      color: Color.fromRGBO(255, 211, 204, 0.1),
+                      repeat: true,
+                      ripplesCount: 3,
+                      child: CircleAvatar(
+                          radius: 70,
+                          backgroundColor:
+                              const Color.fromRGBO(255, 190, 181, 0.16),
+                          child: SvgPicture.asset(
+                            "assets/svg/ra_logo.svg",
+                            width: 100,
+                            height: 73,
+                          )),
                     ),
                   ),
-                )),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 30),
+                    child: Text(
+                      "RealAppraiser",
+                      style: TextStyle(
+                          fontSize: 28,
+                          color: RAColors.white,
+                          fontFamily: "AldrichRegular"),
+                    ),
+                  ),
+                  const Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      "Appraisal made easy",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: RAColors.white,
+                          fontFamily: "InterRegular"),
+                    ),
+                  )
+                ],
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  appVersion,
-                  style: const TextStyle(fontSize: 14, color: RAColors.white),
+                  "Version: $appVersion",
+                  style: const TextStyle(
+                      fontSize: 12,
+                      color: RAColors.white,
+                      fontFamily: "InterRegular"),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
-                Text(RAString.versionDate,
-                    style: const TextStyle(fontSize: 14, color: RAColors.white))
+                Text("Date: ${RAString.versionDate}",
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color: RAColors.white,
+                        fontFamily: "InterRegular"))
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(15.0),
               child: Text("\u00A9 $currentYear ${RAString.copyrightText}",
-                  style: const TextStyle(fontSize: 14, color: RAColors.white)),
+                  style: const TextStyle(
+                      fontSize: 12,
+                      color: RAColors.white,
+                      fontFamily: "InterRegular")),
             )
           ],
         ),
@@ -102,6 +131,7 @@ class _SplashScreenState extends State<SplashScreen>
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
       appVersion = packageInfo.version.toString();
+      RAUtilis.setStorage(StorageString.appVersion, appVersion);
     });
   }
 }
